@@ -4,13 +4,7 @@ import { useState, useEffect, useInsertionEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Profile from "@components/Profile";
-
-type Prompt = {
-  _id: string | number;
-  creator: string;
-  prompt: string;
-  tag: string;
-};
+import { Prompt } from "@types";
 
 const MyProfile = () => {
   const { data: session } = useSession();

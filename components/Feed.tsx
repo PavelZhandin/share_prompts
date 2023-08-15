@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import { Post } from "@types";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -20,10 +21,32 @@ const PromptCardList = ({ data, handleTagClick }) => {
 
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [searchTimeout, setSearchTimeout] =
+    useState<ReturnType<typeof setTimeout>>();
+  const [searchedResults, setSearchedResults] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  const filterPrompts = (searchText) => {
+    const regex = new RegExp(searchText, "i");
+
+    return posts.filter(
+      (post) =>
+        regex.test(post.creator.username) ||
+        regex.test(post.tag) ||
+        regex.test(post.prompt)
+    );
+  };
 
   const handleSearchChange = (e) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
     setSearchText(e.target.value);
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResults(searchResult);
+      }, 500)
+    );
   };
 
   useEffect(() => {
@@ -48,7 +71,12 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      {/* All  Prompts */}
+
+      <PromptCardList
+        data={searchText ? searchedResults : posts}
+        handleTagClick={() => {}}
+      />
     </section>
   );
 };
