@@ -164,3 +164,7 @@
 .flex-between {
   @apply flex justify-between items-center;
 }
+
+.my-class {
+  @apply border-black bg-black;
+}
